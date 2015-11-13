@@ -1,19 +1,19 @@
 {
-  "name": "http-proxy-table",
+  "name": "http-proxy-rules",
   "version": "0.0.1",
-  "description": "A proxy table add-on to the node-http-proxy module.",
+  "description": "A proxy rules add-on to the node-http-proxy module.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/donasaur/http-proxy-table.git"
+    "url": "git+https://github.com/donasaur/http-proxy-rules.git"
   },
   "author": "Don Mai <donhmai@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/donasaur/http-proxy-table/issues"
+    "url": "https://github.com/donasaur/http-proxy-rules/issues"
   },
-  "homepage": "https://github.com/donasaur/http-proxy-table#readme"
+  "homepage": "https://github.com/donasaur/http-proxy-rules#readme"
 }

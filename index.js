@@ -1,5 +1,5 @@
 
-function HttpProxyTable(options) {
+function HttpProxyRules(options) {
   this.rules = options.rules;
   this.default = options.default || null;
 
@@ -11,12 +11,12 @@ function HttpProxyTable(options) {
  * We also return the new endpoint string if a match is found.
  * @param  {Object} options Takes in a `req`, `rules`, (optional) `default` params.
  */
-HttpProxyTable.prototype.test = function test(req) {
+HttpProxyRules.prototype.test = function test(req) {
   var rules = this.rules;
   var target = this.default;
   var path = req.url;
 
-  // go through the proxy table, assuming keys (path prefixes) are ordered
+  // go through the proxy rules, assuming keys (path prefixes) are ordered
   // and pick the first target whose path prefix is a prefix of the
   // request url path. RegExp enabled.
   var pathPrefixRe;
@@ -46,4 +46,4 @@ HttpProxyTable.prototype.test = function test(req) {
   return target;
 }
 
-module.exports = HttpProxyTable;
+module.exports = HttpProxyRules;
