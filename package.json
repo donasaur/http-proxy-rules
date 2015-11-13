@@ -1,0 +1,19 @@
+{
+  "name": "http-proxy-table",
+  "version": "1.0.0",
+  "description": "A proxy table add-on to the node-http-proxy module.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donasaur/http-proxy-table.git"
+  },
+  "author": "Don Mai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donasaur/http-proxy-table/issues"
+  },
+  "homepage": "https://github.com/donasaur/http-proxy-table#readme"
+}
