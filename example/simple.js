@@ -5,7 +5,7 @@ var http = require('http'),
 
 module.exports = function spawnReverseProxy(cb) {
 
-  // Set up proxy rules object
+  // Set up proxy rules instance
   var proxyRules = new HttpProxyRules({
     rules: {
       '.*/test': 'http://localhost:8080/cool',
@@ -21,6 +21,8 @@ module.exports = function spawnReverseProxy(cb) {
   // and proxy rules to proxy requests to different targets
   http.createServer(function(req, res) {
 
+    // a test method is exposed on the proxy rules instance
+    // to test a request to see if it matches against one of the specified rules
     var target;
     if (target = proxyRules.test(req)) {
       return proxy.web(req, res, {
