@@ -1,6 +1,9 @@
 
 http-proxy-rules
 ======
+
+[![Build Status](https://travis-ci.org/donasaur/http-proxy-rules.svg?branch=master)](https://travis-ci.org/donasaur/http-proxy-rules)
+
 `http-proxy-rules` is an add-on module to the [node-http-proxy](https://github.com/nodejitsu/node-http-proxy) library. It lets you define a set of rules to translate matching routes to target routes that the reverse proxy service will talk to on the client's behalf.
 
 ## Installation
@@ -51,7 +54,7 @@ You can initialize a new `http-proxy-rules` instance with the following options:
 ```js
 {
   rules: {}, // See notes below
-  default: '' // (optional) if there are no matching rules, translate url path to the specified dfeualt
+  default: '' // (optional) if no rules matched, translate url path to specified default
 }
 ```
 The rules object contains a set of key-value pairs mapping a regex-supported url path to a target route. The target route must include the protocol (e.g., http) and the FQDN. See the [tests](test/index.tests.js) for examples of how incoming route url paths may be translated with the use of this module.
