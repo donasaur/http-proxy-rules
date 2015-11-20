@@ -4,7 +4,7 @@
   "description": "A proxy rules add-on to the node-http-proxy module.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/donasaur/http-proxy-rules/issues"
   },
-  "homepage": "https://github.com/donasaur/http-proxy-rules#readme"
+  "homepage": "https://github.com/donasaur/http-proxy-rules#readme",
+  "devDependencies": {
+    "async": "^1.5.0",
+    "chai": "^3.4.1",
+    "http-proxy": "^1.12.0",
+    "mocha": "^2.3.4",
+    "request": "^2.67.0"
+  }
 }
