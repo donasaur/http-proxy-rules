@@ -1,4 +1,8 @@
 
+/**
+ * This is a constructor for a HttpProxyRules instance.
+ * @param {Object} options Takes in a `rules` obj, (optional) `default` target
+ */
 function HttpProxyRules(options) {
   this.rules = options.rules;
   this.default = options.default || null;
@@ -9,9 +13,9 @@ function HttpProxyRules(options) {
 /**
  * This function will modify the `req` object if a match is found.
  * We also return the new endpoint string if a match is found.
- * @param  {Object} options Takes in a `req`, `rules`, (optional) `default` params.
+ * @param  {Object} options Takes in a `req` object.
  */
-HttpProxyRules.prototype.test = function test(req) {
+HttpProxyRules.prototype.match = function match(req) {
   var rules = this.rules;
   var target = this.default;
   var path = req.url;

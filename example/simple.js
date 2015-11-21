@@ -23,8 +23,8 @@ module.exports = function spawnReverseProxy(cb) {
 
     // a test method is exposed on the proxy rules instance
     // to test a request to see if it matches against one of the specified rules
-    var target;
-    if (target = proxyRules.test(req)) {
+    var target = proxyRules.match(req);
+    if (target) {
       return proxy.web(req, res, {
         target: target
       });

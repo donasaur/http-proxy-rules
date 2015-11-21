@@ -1,6 +1,6 @@
 {
   "name": "http-proxy-rules",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A proxy rules add-on to the node-http-proxy module.",
   "main": "index.js",
   "scripts": {
