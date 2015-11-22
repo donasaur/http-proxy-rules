@@ -10,7 +10,7 @@ var spawnReverseProxy = require('../example/simple'),
 describe('Proxy Routes', function () {
   var proxyServerPort = 6010;
   var targetPort = 8080;
-  var targetPrefix = '127.0.0.1:' + targetPort;
+  var targetFQDN = '127.0.0.1';
 
   before(function (done) {
     // runs before all tests in this block
@@ -35,32 +35,50 @@ describe('Proxy Routes', function () {
 
   it('should translate the url correctly', function (done) {
 
-    // Feel free to add more cases
     var urlTranslationTests = [{
+        // visited path matches rule (1).
         visitedPath: '/test',
-        newUrlTarget: targetPrefix + '/cool'
+        newUrlTarget: targetFQDN + targetPort + '/cool'
       }, {
+        // visited path matches rule (1).
+        // whatever portion is not part of the match is carried over
+        // to the new path.
+        // in this case, the '/' is carried over.
         visitedPath: '/test/',
-        newUrlTarget: targetPrefix + '/cool/'
+        newUrlTarget: targetFQDN + targetPort + '/cool/'
       }, {
+        // visited path matches rule (1).
+        // query parameters are carried over.
         visitedPath: '/test?hi=5/',
-        newUrlTarget: targetPrefix + '/cool?hi=5/'
+        newUrlTarget: targetFQDN + targetPort + '/cool?hi=5/'
       }, {
+        // visited path matches rule (2).
+        // the unmatched portion '/yo' is carried over.
         visitedPath: '/test2/yo',
-        newUrlTarget: targetPrefix + '/cool2/yo'
+        newUrlTarget: targetFQDN + targetPort + '/cool2/yo'
       }, {
+        // visited path matches rule (1).
+        // note that the key is interpreted as a regex expression and the
+        // module matches against the visited path, and not the entire url.
         visitedPath: '/fuzzyshoe/test',
-        newUrlTarget: targetPrefix + '/cool'
+        newUrlTarget: targetFQDN + targetPort + '/cool'
       }, {
+        // visited path matches rule (1).
+        // the unmatched portion '/seven' is carried over.
         visitedPath: '/test/seven',
-        newUrlTarget: targetPrefix + '/cool/seven'
+        newUrlTarget: targetFQDN + targetPort + '/cool/seven'
       }, {
-        // should match /test but not /testalmost
+        // no rule matched, so the module uses the specified default target.
+        // the entire visited path is carried over.
+        // see the `Other Notes` section of README to see why specifying
+        // the rule `.*/test` does not match `/testalmost`.
         visitedPath: '/testalmost',
-        newUrlTarget: targetPrefix + '/testalmost'
+        newUrlTarget: targetFQDN + targetPort + '/testalmost'
       }, {
+        // no rule matched, so the module uses the specified default target.
+        // the entire visited path is carried over.
         visitedPath: '/testalmost/5',
-        newUrlTarget: targetPrefix + '/testalmost/5'
+        newUrlTarget: targetFQDN + targetPort + '/testalmost/5'
       }
     ];
 
@@ -73,7 +91,7 @@ describe('Proxy Routes', function () {
       }, function processResp(err, res, body) {
 
         expect(res.statusCode).to.equal(200);
-        expect(targetPrefix + body.translatedPath).to.equal(comparisonObj.newUrlTarget);
+        expect(targetFQDN + targetPort + body.translatedPath).to.equal(comparisonObj.newUrlTarget);
         cb();
       });
     }, done);
