@@ -64,3 +64,27 @@ The rules object contains a set of key-value pairs mapping a regex-supported url
 ## Other Notes
 * `(?:\\W|$)` is appended to the end of the regex-supported url path, so that if there is a key like  `.*/test` in the rules, the module matches paths `/test`, `/test/`, `/test?` but not `/testing`.
 * As long as object keys continued to be ordered in V8, if there are multiple rules that match against a given url path, the module will pick the matching rule listed first for the translation.
+
+## IP Whitelisting
+At times there is a need to block proxy requests from ip addresses you have not already whitelisted. To support this use case you may now provide an object to apply additional 'rules' for proxying.
+
+
+```js
+  // Set up proxy rules instance
+  var proxyRules = new HttpProxyRules({
+    rules: {
+      '.*/ipTest1/': { 
+          'whitelist': [ // only allow whitelist
+              "127.0.0.1" // Explicit IP Address Whitelisted
+          ],
+          'target': 'http://localhost:8080/cool3/'
+      },
+      '.*/ipTest2/': { 
+          'whitelist': [ // only allow whitelist
+              "8.8.8.0/24" //CIDR IP Range notation
+          ],
+          'target': 'http://localhost:8080/cool4/'
+      },
+
+```
+Note the two options available. You may provide an IP address to allow or you may also provide Classless Inter-Doman Routing notation. For more information on CIDR notation see the wikipedia article [https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing#CIDR_notation]

@@ -1,4 +1,5 @@
-
+var rangeCheck = require('range_check');
+var requestIp = require('request-ip');
 /**
  * This is a constructor for a HttpProxyRules instance.
  * @param {Object} options Takes in a `rules` obj, (optional) `default` target
@@ -6,7 +7,7 @@
 function HttpProxyRules(options) {
   this.rules = options.rules;
   this.default = options.default || null;
-
+  
   return this;
 };
 
@@ -41,7 +42,26 @@ HttpProxyRules.prototype.match = function match(req) {
       if (testPrefixMatch && testPrefixMatch.index === 0) {
         urlPrefix = pathEndsWithSlash ? testPrefixMatch[0] : testPrefixMatch[1];
         req.url = path.replace(urlPrefix, '');
-        target = rules[pathPrefix];
+        // Check to see if value of key value pair is an object
+        if (typeof rules[pathPrefix] === 'object') {
+          // Check to see if there is ip matching logic in place
+          var ip = requestIp.getClientIp(req);
+          if (rules[pathPrefix].whitelist) {
+            for (var range in rules[pathPrefix].whitelist) {
+              if (rules[pathPrefix].whitelist.hasOwnProperty(range)) {
+                if ((rules[pathPrefix].whitelist[range].indexOf('/') > -1 && rangeCheck.inRange(ip, rules[pathPrefix].whitelist[range])) 
+                  || (rules[pathPrefix].whitelist[range] === ip)) {
+                  target = rules[pathPrefix].target;
+                }
+              }
+            }
+          } else {
+            target = rules[pathPrefix].target;
+          }
+        } else {
+          target = rules[pathPrefix];
+        }
+        
         break;
       }
     }
