@@ -21,7 +21,7 @@ describe('Proxy Routes', function () {
         // response includes the url that you tried to access
         translatedPath: req.url
       }));
-    }).listen(targetPort, function mockServerReady() {
+    }).listen(targetPort, '0.0.0.0', function mockServerReady() {
       spawnReverseProxy(function proxyServerReady() {
         done(); // call done to start running test suite
       });
@@ -31,6 +31,40 @@ describe('Proxy Routes', function () {
   after(function (done) {
     // runs after all tests in this block
     done();
+  });
+  
+  it('should allow whitelisted ipv4 and deny non-whitelisted ipv4 addresses', function(done) {
+    async.parallel([
+        function(cb) {
+          request({
+            url: 'http://127.0.0.1:' + proxyServerPort + "/ipTest1/",
+            json: true
+          }, function processResp(err, res, body) {
+            expect(res.statusCode).to.equal(200);
+            cb();
+          });
+        },
+        function(cb) {
+          request({
+            url: 'http://127.0.0.1:' + proxyServerPort + "/ipTest2/",
+            json: true
+          }, function processResp(err, res, body) {
+            expect(body.translatedPath).to.not.equal('');
+            cb();
+          });
+        },
+        function(cb) {
+          request({
+            url: 'http://127.0.0.1:' + proxyServerPort + "/ipTest3/",
+            json: true
+          }, function processResp(err, res, body) {
+            expect(body.translatedPath).to.not.equal('');
+            cb();
+          });
+        }
+    ], function(){
+        done();
+    });
   });
 
   it('should translate the url correctly', function (done) {
