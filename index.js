@@ -42,6 +42,11 @@ HttpProxyRules.prototype.match = function match(req) {
         urlPrefix = pathEndsWithSlash ? testPrefixMatch[0] : testPrefixMatch[1];
         req.url = path.replace(urlPrefix, '');
         target = rules[pathPrefix];
+        // We replace matches on the target,
+        // e.g. /posts/([0-9]+)/comments/([0-9]+) => /posts/$1/comments/$2
+        for (var i = 1; i < testPrefixMatch.length; i++) {
+          target = target.replace('$' + i, testPrefixMatch[i]);
+        }
         break;
       }
     }
