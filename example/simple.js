@@ -11,6 +11,9 @@ module.exports = function spawnReverseProxy(cb) {
       '.*/test': 'http://localhost:8080/cool', // Rule (1)
       '.*/test2/': 'http://localhost:8080/cool2/' // Rule (2)
     },
+    hosts: {
+      'testhost': 'http://localhost:8080/testhost'
+    },
     default: 'http://localhost:8080' // default target
   });
 
@@ -24,6 +27,13 @@ module.exports = function spawnReverseProxy(cb) {
     // a match method is exposed on the proxy rules instance
     // to test a request to see if it matches against one of the specified rules
     var target = proxyRules.match(req);
+    if (target) {
+      return proxy.web(req, res, {
+        target: target
+      });
+    }
+
+    var target = proxyRules.matchHost(req);
     if (target) {
       return proxy.web(req, res, {
         target: target
