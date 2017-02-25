@@ -1,10 +1,11 @@
 
 /**
  * This is a constructor for a HttpProxyRules instance.
- * @param {Object} options Takes in a `rules` obj, (optional) `default` target
+ * @param {Object} options Takes in a `rules` obj, a `hosts` obj, (optional) `default` target
  */
 function HttpProxyRules(options) {
   this.rules = options.rules;
+  this.hosts = options.hosts;
   this.default = options.default || null;
 
   return this;
@@ -52,6 +53,25 @@ HttpProxyRules.prototype.match = function match(req) {
     }
   }
 
+  return target;
+}
+
+/**
+ * This function will modify the `req` object if a matching host is found.
+ * We also return the new endpoint string if a match is found.
+ * @param  {Object} options Takes in a `req` object.
+ */
+HttpProxyRules.prototype.matchHost = function matchHost(req) {
+  var hosts = this.hosts;
+  var target = this.default;
+  reqHost = req.headers['host'];
+
+  for (var host in hosts) {
+    if (host === reqHost) {
+      target = hosts[host];
+      break;
+    }
+  }
   return target;
 }
 
