@@ -9,7 +9,9 @@ module.exports = function spawnReverseProxy(cb) {
   var proxyRules = new HttpProxyRules({
     rules: {
       '.*/test': 'http://localhost:8080/cool', // Rule (1)
-      '.*/test2/': 'http://localhost:8080/cool2/' // Rule (2)
+      '.*/test2/': 'http://localhost:8080/cool2/', // Rule (2)
+      '/posts/([0-9]+)/comments/([0-9]+)': 'http://localhost:8080/p/$1/c/$2', // Rule (3)
+      '/author/([0-9]+)/posts/([0-9]+)/': 'http://localhost:8080/a/$1/p/$2/' // Rule (4)
     },
     default: 'http://localhost:8080' // default target
   });
