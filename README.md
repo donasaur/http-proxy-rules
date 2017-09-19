@@ -21,7 +21,9 @@ npm install http-proxy-rules --save
   var proxyRules = new HttpProxyRules({
     rules: {
       '.*/test': 'http://localhost:8080/cool', // Rule (1)
-      '.*/test2/': 'http://localhost:8080/cool2/' // Rule (2)
+      '.*/test2/': 'http://localhost:8080/cool2/', // Rule (2)
+      '/posts/([0-9]+)/comments/([0-9]+)': 'http://localhost:8080/p/$1/c/$2', // Rule (3)
+      '/author/([0-9]+)/posts/([0-9]+)/': 'http://localhost:8080/a/$1/p/$2/' // Rule (4)
     },
     default: 'http://localhost:8080' // default target
   });
@@ -47,7 +49,7 @@ npm install http-proxy-rules --save
   }).listen(6010, cb);
 ```
 
-Given the object we used to initialize the `HttpProxyRules` instance above, here are some [**examples**](test/index.tests.js#L38) of how sample url paths would be translated.
+Given the object we used to initialize the `HttpProxyRules` instance above, here are some [**examples**](test/index.tests.js#L33) of how sample url paths would be translated.
 
 ## Options
 
@@ -59,7 +61,7 @@ You can initialize a new `http-proxy-rules` instance with the following options:
   default: '' // (optional) if no rules matched, translate url path to specified default
 }
 ```
-The rules object contains a set of key-value pairs mapping a regex-supported url path to a target route. The module only tries to match the visited url path, and not the entire url, with a specified rule. The target route must include the protocol (e.g., http) and the FQDN. See the [tests](test/index.tests.js) for examples of how incoming route url paths may be translated with the use of this module.
+The rules object contains a set of key-value pairs mapping a regex-supported url path to a target route. The module only tries to match the visited url path, and not the entire url, with a specified rule. The target route must include the protocol (e.g., http) and the FQDN. You can use capturing groups when constructing a rule key (e.g. `'/posts/(\d+)/`). In this case, `$1` in the target path will be replaced with the value from the first capturing group, `$2` with the second one, and so on. See the [tests](test/index.tests.js) for examples of how incoming route url paths may be translated with the use of this module.
 
 ## Other Notes
 * `(?:\\W|$)` is appended to the end of the regex-supported url path, so that if there is a key like  `.*/test` in the rules, the module matches paths `/test`, `/test/`, `/test?` but not `/testing`.

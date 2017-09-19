@@ -28,57 +28,74 @@ describe('Proxy Routes', function () {
     });
   });
 
-  after(function (done) {
-    // runs after all tests in this block
-    done();
-  });
-
   it('should translate the url correctly', function (done) {
 
     var urlTranslationTests = [{
         // visited path matches rule (1).
         visitedPath: '/test',
-        newUrlTarget: targetFQDN + targetPort + '/cool'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/cool'
       }, {
         // visited path matches rule (1).
         // whatever portion is not part of the match is carried over
         // to the new path.
         // in this case, the '/' is carried over.
         visitedPath: '/test/',
-        newUrlTarget: targetFQDN + targetPort + '/cool/'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/cool/'
       }, {
         // visited path matches rule (1).
         // query parameters are carried over.
         visitedPath: '/test?hi=5/',
-        newUrlTarget: targetFQDN + targetPort + '/cool?hi=5/'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/cool?hi=5/'
       }, {
         // visited path matches rule (2).
         // the unmatched portion '/yo' is carried over.
         visitedPath: '/test2/yo',
-        newUrlTarget: targetFQDN + targetPort + '/cool2/yo'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/cool2/yo'
       }, {
         // visited path matches rule (1).
         // note that the key is interpreted as a regex expression and the
         // module matches against the visited path, and not the entire url.
         visitedPath: '/fuzzyshoe/test',
-        newUrlTarget: targetFQDN + targetPort + '/cool'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/cool'
       }, {
         // visited path matches rule (1).
         // the unmatched portion '/seven' is carried over.
         visitedPath: '/test/seven',
-        newUrlTarget: targetFQDN + targetPort + '/cool/seven'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/cool/seven'
       }, {
         // no rule matched, so the module uses the specified default target.
         // the entire visited path is carried over.
         // see the `Other Notes` section of README to see why specifying
         // the rule `.*/test` does not match `/testalmost`.
         visitedPath: '/testalmost',
-        newUrlTarget: targetFQDN + targetPort + '/testalmost'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/testalmost'
       }, {
         // no rule matched, so the module uses the specified default target.
         // the entire visited path is carried over.
         visitedPath: '/testalmost/5',
-        newUrlTarget: targetFQDN + targetPort + '/testalmost/5'
+        newUrlTarget: targetFQDN + ':' + targetPort + '/testalmost/5'
+      }, {
+        // visited path matched rule (3).
+        // regex placeholder should be matched and replaced correctly
+        visitedPath: '/posts/11/comments/12',
+        newUrlTarget: targetFQDN + ':' + targetPort + '/p/11/c/12'
+      }, {
+        // visited path matches rule (3).
+        // whatever portion is not part of the match is carried over
+        // to the new path.
+        // in this case, the '/' is carried over.
+        visitedPath: '/posts/11/comments/12/',
+        newUrlTarget: targetFQDN + ':' + targetPort + '/p/11/c/12/'
+      }, {
+        // visited path matches rule (3).
+        // query parameters are carried over.
+        visitedPath: '/posts/11/comments/12?hi=5/',
+        newUrlTarget: targetFQDN + ':' + targetPort + '/p/11/c/12?hi=5/'
+      }, {
+        // visited path matches rule (4).
+        // parameters substitution should work correctly for rules with slash at the end
+        visitedPath: '/author/11/posts/12/',
+        newUrlTarget: targetFQDN + ':' + targetPort + '/a/11/p/12/'
       }
     ];
 
@@ -91,7 +108,7 @@ describe('Proxy Routes', function () {
       }, function processResp(err, res, body) {
 
         expect(res.statusCode).to.equal(200);
-        expect(targetFQDN + targetPort + body.translatedPath).to.equal(comparisonObj.newUrlTarget);
+        expect(targetFQDN + ':' + targetPort + body.translatedPath).to.equal(comparisonObj.newUrlTarget);
         cb();
       });
     }, done);
