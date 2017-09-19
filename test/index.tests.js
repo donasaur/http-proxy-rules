@@ -10,7 +10,7 @@ var spawnReverseProxy = require('../example/simple'),
 describe('Proxy Routes', function () {
   var proxyServerPort = 6010;
   var targetPort = 8080;
-  var targetFQDN = '127.0.0.1';
+  var targetFQDN = '127.0.0.1:';
 
   before(function (done) {
     // runs before all tests in this block
@@ -26,11 +26,6 @@ describe('Proxy Routes', function () {
         done(); // call done to start running test suite
       });
     });
-  });
-
-  after(function (done) {
-    // runs after all tests in this block
-    done();
   });
 
   it('should translate the url correctly', function (done) {
@@ -79,6 +74,28 @@ describe('Proxy Routes', function () {
         // the entire visited path is carried over.
         visitedPath: '/testalmost/5',
         newUrlTarget: targetFQDN + targetPort + '/testalmost/5'
+      }, {
+        // visited path matched rule (3).
+        // regex placeholder should be matched and replaced correctly
+        visitedPath: '/posts/11/comments/12',
+        newUrlTarget: targetFQDN + targetPort + '/p/11/c/12'
+      }, {
+        // visited path matches rule (3).
+        // whatever portion is not part of the match is carried over
+        // to the new path.
+        // in this case, the '/' is carried over.
+        visitedPath: '/posts/11/comments/12/',
+        newUrlTarget: targetFQDN + targetPort + '/p/11/c/12/'
+      }, {
+        // visited path matches rule (3).
+        // query parameters are carried over.
+        visitedPath: '/posts/11/comments/12?hi=5/',
+        newUrlTarget: targetFQDN + targetPort + '/p/11/c/12?hi=5/'
+      }, {
+        // visited path matches rule (4).
+        // parameters substitution should work correctly for rules with slash at the end
+        visitedPath: '/author/11/posts/12/',
+        newUrlTarget: targetFQDN + targetPort + '/a/11/p/12/'
       }
     ];
 
