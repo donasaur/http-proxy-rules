@@ -66,3 +66,6 @@ The rules object contains a set of key-value pairs mapping a regex-supported url
 ## Other Notes
 * `(?:\\W|$)` is appended to the end of the regex-supported url path, so that if there is a key like  `.*/test` in the rules, the module matches paths `/test`, `/test/`, `/test?` but not `/testing`.
 * As long as object keys continued to be ordered in V8, if there are multiple rules that match against a given url path, the module will pick the matching rule listed first for the translation.
+
+## License
+[MIT](LICENSE)
