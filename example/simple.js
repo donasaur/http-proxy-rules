@@ -13,6 +13,9 @@ module.exports = function spawnReverseProxy(cb) {
       '/posts/([0-9]+)/comments/([0-9]+)': 'http://localhost:8080/p/$1/c/$2', // Rule (3)
       '/author/([0-9]+)/posts/([0-9]+)/': 'http://localhost:8080/a/$1/p/$2/' // Rule (4)
     },
+    hosts: {
+      'testhost': 'http://localhost:8080/testhost'
+    },
     default: 'http://localhost:8080' // default target
   });
 
@@ -26,6 +29,13 @@ module.exports = function spawnReverseProxy(cb) {
     // a match method is exposed on the proxy rules instance
     // to test a request to see if it matches against one of the specified rules
     var target = proxyRules.match(req);
+    if (target) {
+      return proxy.web(req, res, {
+        target: target
+      });
+    }
+
+    var target = proxyRules.matchHost(req);
     if (target) {
       return proxy.web(req, res, {
         target: target

@@ -19,7 +19,9 @@ describe('Proxy Routes', function () {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify({
         // response includes the url that you tried to access
-        translatedPath: req.url
+        translatedPath: req.url,
+        translatedHost: req.headers['host'],
+        translatedPort: req.socket.localPort
       }));
     }).listen(targetPort, function mockServerReady() {
       spawnReverseProxy(function proxyServerReady() {
@@ -113,6 +115,21 @@ describe('Proxy Routes', function () {
       });
     }, done);
 
+  });
+
+  it('should translate the port correctly', function (done) {
+      request({
+        url: 'http://127.0.0.1:' + proxyServerPort + '/testhost',
+        json: true,
+        headers: {
+          'Host': 'testhost'
+        }
+      }, function processResp(err, res, body) {
+
+        expect(res.statusCode).to.equal(200);
+        expect(body.translatedPort + body.translatedPath).to.equal('8080/testhost');
+        done();
+      });
   });
 
 });
