@@ -46,7 +46,7 @@ npm install http-proxy-rules --save
 
     res.writeHead(500, { 'Content-Type': 'text/plain' });
     res.end('The request url and path did not match any of the listed rules!');
-  }).listen(6010, cb);
+  }).listen(6010);
 ```
 
 Given the object we used to initialize the `HttpProxyRules` instance above, here are some [**examples**](test/index.tests.js#L33) of how sample url paths would be translated.
